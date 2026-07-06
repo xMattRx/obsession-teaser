@@ -865,6 +865,13 @@
   }
   .willow {
     height: 120px;
+    /* Coluna única: evita que o box da imagem estique demais (430–499px).
+       Precisa de largura explícita (o filho é `fill`/absoluto, sem tamanho
+       intrínseco) senão colapsa; justify-self centraliza no track 1fr.
+       No layout de 2 colunas (≥500px) a coluna fixa de 160px domina. */
+    width: 100%;
+    max-width: 320px;
+    justify-self: center;
   }
   .pmeta .kick {
     margin-bottom: 6px;
@@ -897,6 +904,40 @@
     padding: 10px 16px;
     display: inline-flex;
     align-items: center;
+  }
+}
+
+/* ---------- MOBILE GRANDE / PHABLET (500–767px) ----------
+   Nesta faixa a coluna única estica a imagem do produto num box enorme e vazio.
+   Voltamos o card pra 2 colunas (imagem em coluna fixa + texto), aproveitando a
+   largura extra. Nav segue no hamburguer; wordmark segue branco sólido. */
+@media (min-width: 500px) and (max-width: 767px) {
+  .pcard {
+    grid-template-columns: 160px 1fr;
+    gap: 22px;
+    padding: 22px 24px;
+    text-align: left;
+  }
+  .willow {
+    height: 170px;
+  }
+  .pmeta .kick {
+    margin-bottom: 8px;
+  }
+  .pmeta h3 {
+    font-size: 30px;
+    margin-bottom: 10px;
+  }
+  .pmeta p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 16px;
+  }
+  .prow {
+    justify-content: flex-start;
+  }
+  .product {
+    width: min(620px, 92vw);
   }
 }
 
