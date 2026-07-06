@@ -924,6 +924,9 @@
   }
   .prow {
     justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
   }
   .buy,
   .how {
