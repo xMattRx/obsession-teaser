@@ -1,27 +1,50 @@
 "use client";
 
+import bear from "@/assets/bear.jpeg";
+import nikki from "@/assets/nikki.jpeg";
+import nikkiBear from "@/assets/nikki-bear.jpg";
 import wishWillow from "@/assets/wish-willow.png";
+import { animate, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AmbientAudio } from "./AmbientAudio";
 import { HeroNav } from "./HeroNav";
 import { HeroSplitImages } from "./HeroSplitImages";
 import { TrailerModal } from "./TrailerModal";
+import { Wordmark } from "./Wordmark";
 import styles from "./hero.module.css";
 
-// Cinematic reveal sequence: split portraits collapse into a spinning blob,
-// which resolves into the OBSESSION wordmark, tagline, and product card.
+// Cinematic reveal timeline:
+//   1  split-screen (Bear | Nikki) no fundo; letras emergem recortadas dele.
+//   2  split estabelecido (fundo + recorte do texto).
+//   3  CROSS-FADE: o fundo split e o recorte trocam JUNTOS para a foto única
+//      do casal (~1s), dirigidos pelo mesmo MotionValue coupleReveal.
+//   4  casal mantido; texto começa a encolher, tagline entra.
+//   5  texto sobe e faz cross-fade para branco com halação; card de produto.
+const COUPLE_PHASE = 3;
 const STEPS: readonly [phase: number, delayMs: number][] = [
-    [2, 1600],
-    [3, 3300],
-    [4, 5000],
-    [5, 6600],
+    [2, 1500],
+    [3, 3200],
+    [4, 5200],
+    [5, 7000],
 ];
 
 export function Hero() {
     const [phase, setPhase] = useState(1);
     const [trailerOpen, setTrailerOpen] = useState(false);
     const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    // Fonte de verdade ÚNICA da troca de imagem de fundo: 0 = split (Bear|Nikki),
+    // 1 = foto do casal. Consumida pelo fundo (HeroSplitImages) e pelo recorte do
+    // texto (Wordmark), então os dois cruzam em perfeita sincronia.
+    const coupleReveal = useMotionValue(0);
+    useEffect(() => {
+        const controls = animate(coupleReveal, phase >= COUPLE_PHASE ? 1 : 0, {
+            duration: phase >= COUPLE_PHASE ? 1 : 0.6,
+            ease: [0.7, 0, 0.2, 1],
+        });
+        return () => controls.stop();
+    }, [phase, coupleReveal]);
 
     const clear = useCallback(() => {
         timers.current.forEach(clearTimeout);
@@ -53,14 +76,17 @@ export function Hero() {
 
     return (
         <div className={styles.stage} data-phase={phase}>
-            <HeroSplitImages />
+            <HeroSplitImages reveal={coupleReveal} />
 
-            <div className={styles.blobwrap}>
-                <div className={styles.blob} />
-            </div>
+            <div className={styles.darken} />
 
             <div className={styles.wordmark}>
-                <div className={styles.word}>Obsession</div>
+                <Wordmark
+                    bearSrc={bear.src}
+                    nikkiSrc={nikki.src}
+                    coupleSrc={nikkiBear.src}
+                    reveal={coupleReveal}
+                />
             </div>
 
             <div className={styles.glow} />
