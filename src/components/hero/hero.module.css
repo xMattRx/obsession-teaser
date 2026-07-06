@@ -619,16 +619,40 @@
   color: #fff;
 }
 
-/* CONTROLS */
-.controls {
+/* FOOTER — barra única no rodapé: Música à esquerda, Repetir/Pular à direita.
+   justify-between + align-items center dão baseline e espaçamento consistentes;
+   o padding lateral casa com o da nav (40px desktop / 26 tablet / 18 mobile). */
+.footer {
   position: absolute;
-  bottom: 22px;
-  right: 26px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 80;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  padding-left: calc(40px + env(safe-area-inset-left));
+  padding-right: calc(40px + env(safe-area-inset-right));
+  padding-bottom: calc(22px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+/* A barra em si não captura cliques (pra não bloquear o card); só os botões. */
+.footer > * {
+  pointer-events: auto;
+}
+
+/* CONTROLS — par Repetir/Pular, agrupado à direita dentro do footer. */
+.controls {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 .ctl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -639,6 +663,7 @@
   border-radius: 100px;
   padding: 8px 15px;
   cursor: pointer;
+  backdrop-filter: blur(6px);
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 .ctl:hover {
@@ -721,6 +746,9 @@
   transform: translateX(-50%) scale(1.05);
 }
 .stage[data-phase="5"] .product {
+  /* Offset fixo (px) do rodapé: garante folga acima do footer em qualquer
+     ALTURA de viewport (o antigo 6vh encostava no footer em telas baixas). */
+  bottom: calc(80px + env(safe-area-inset-bottom));
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
@@ -734,6 +762,11 @@
 @media (max-width: 1023px) {
   .nav {
     padding: 20px 26px;
+  }
+  /* Footer acompanha o padding lateral da nav. */
+  .footer {
+    padding-left: calc(26px + env(safe-area-inset-left));
+    padding-right: calc(26px + env(safe-area-inset-right));
   }
   .navactions,
   .navlinks {
@@ -852,10 +885,13 @@
   }
 
   /* CARD DE PRODUTO: empilha verticalmente, compacto, e afastado do rodapé pra
-     limpar os controles (Repetir/Pular) e deixar a tagline visível acima. */
+     limpar os controles (Repetir/Pular) e deixar a tagline visível acima.
+     bottom é escopado na fase 5 pra não ser sobrescrito pelo base (80px). */
+  .stage[data-phase="5"] .product {
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
   .product {
     width: 92vw;
-    bottom: calc(64px + env(safe-area-inset-bottom));
   }
   .pcard {
     grid-template-columns: 1fr;
@@ -894,16 +930,18 @@
     min-height: 44px;
   }
 
-  /* CONTROLES: touch targets ≥44px, afastados da área segura. */
-  .controls {
-    bottom: calc(16px + env(safe-area-inset-bottom));
-    right: calc(16px + env(safe-area-inset-right));
+  /* FOOTER: padding lateral da nav mobile; touch targets ≥44px. */
+  .footer {
+    padding-left: calc(18px + env(safe-area-inset-left));
+    padding-right: calc(18px + env(safe-area-inset-right));
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
   .ctl {
     min-height: 44px;
     padding: 10px 16px;
-    display: inline-flex;
-    align-items: center;
+  }
+  .controls {
+    gap: 10px;
   }
 }
 
@@ -938,6 +976,48 @@
   }
   .product {
     width: min(620px, 92vw);
+  }
+}
+
+/* ---------- VIEWPORT BAIXO (Fase 5) — tablet+ com pouca altura ----------
+   Em telas baixas (tablet retrato curto, tablet paisagem, desktop pequeno tipo
+   1024×768) o card subia alto demais e cobria o pill "Assistir Trailer" e/ou o
+   rodapé. O problema é a ALTURA da viewport, não a largura — então usamos
+   max-height: compactamos o card (o lado do texto é quem manda na altura),
+   subimos tagline/wordmark e ancoramos o card num offset fixo do rodapé.
+   min-width: 768 preserva o layout mobile próprio (<768). */
+@media (min-width: 768px) and (max-height: 900px) {
+  .pcard {
+    gap: 20px;
+    padding: 18px 22px;
+  }
+  .willow {
+    height: 130px;
+  }
+  .pmeta .kick {
+    margin-bottom: 6px;
+  }
+  .pmeta h3 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .pmeta p {
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .buy,
+  .how {
+    padding: 11px 22px;
+  }
+  .stage[data-phase="5"] .product {
+    bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+  .stage[data-phase="5"] .tag {
+    transform: translateY(-19vh);
+  }
+  .stage[data-phase="5"] .wordmark {
+    transform: translateY(-27vh) scale(0.48);
   }
 }
 

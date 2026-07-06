@@ -7,7 +7,7 @@ import wishWillow from "@/assets/wish-willow.png";
 import { animate, useMotionValue } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AmbientAudio } from "./AmbientAudio";
+import { useAmbientAudio } from "./AmbientAudio";
 import { HeroNav } from "./HeroNav";
 import { HeroSplitImages } from "./HeroSplitImages";
 import { TrailerModal } from "./TrailerModal";
@@ -32,6 +32,7 @@ const STEPS: readonly [phase: number, delayMs: number][] = [
 export function Hero() {
     const [phase, setPhase] = useState(1);
     const [trailerOpen, setTrailerOpen] = useState(false);
+    const { playing: musicOn, toggle: toggleMusic, audio } = useAmbientAudio();
     // Quando o usuário pede menos movimento, pulamos direto pro estado final
     // (fase 5) sem rodar a sequência de beats nem os cross-fades animados.
     const [reducedMotion, setReducedMotion] = useState(false);
@@ -148,7 +149,7 @@ export function Hero() {
 
             {trailerOpen && <TrailerModal onClose={() => setTrailerOpen(false)} />}
 
-            <AmbientAudio />
+            {audio}
 
             <div className={styles.grain} />
             <div className={styles.vig} />
@@ -157,13 +158,26 @@ export function Hero() {
                 style={{ width: `${((phase - 1) / 4) * 100}%` }}
             />
 
-            <div className={styles.controls}>
-                <button className={styles.ctl} onClick={run}>
-                    ↻ Repetir
+            {/* Rodapé único: Música à esquerda, Repetir/Pular à direita — mesmo
+                grid (justify-between / align-items center), mesmo padding lateral
+                da nav e mesma baseline em todos os breakpoints. */}
+            <div className={styles.footer}>
+                <button
+                    className={styles.ctl}
+                    onClick={toggleMusic}
+                    aria-label={musicOn ? "Desativar música" : "Ativar música"}
+                >
+                    {musicOn ? "🔊 Música" : "🔇 Música"}
                 </button>
-                <button className={styles.ctl} onClick={skip}>
-                    Pular ↴
-                </button>
+
+                <div className={styles.controls}>
+                    <button className={styles.ctl} onClick={run}>
+                        ↻ Repetir
+                    </button>
+                    <button className={styles.ctl} onClick={skip}>
+                        Pular ↴
+                    </button>
+                </div>
             </div>
         </div>
     );

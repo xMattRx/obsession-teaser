@@ -5,7 +5,11 @@ import { useEffect, useRef, useState } from "react";
 const AMBIENT_VOLUME = 0.25;
 const FADE_MS = 1500;
 
-export function AmbientAudio() {
+// Hook da música ambiente: dono do <audio> e da lógica de fade/autoplay.
+// Retorna o elemento <audio> (renderizado pelo Hero), o estado `playing` e o
+// `toggle` — assim o BOTÃO fica no rodapé compartilhado do Hero, alinhado no
+// mesmo grid dos controles Repetir/Pular (em vez de um fixed independente).
+export function useAmbientAudio() {
     const audioRef = useRef<HTMLAudioElement>(null);
     const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const [playing, setPlaying] = useState(false);
@@ -73,27 +77,15 @@ export function AmbientAudio() {
         play(audio);
     };
 
-    return (
-        <>
-            <audio
-                ref={audioRef}
-                src="/audio/little-dippers-forever.mp3"
-                loop
-                autoPlay
-                muted
-            />
-            <button
-                onClick={toggle}
-                aria-label={playing ? "Desativar música" : "Ativar música"}
-                // Touch target ≥44px e respeito à área segura (notch iOS).
-                style={{
-                    bottom: "max(1.5rem, env(safe-area-inset-bottom))",
-                    left: "max(1.5rem, env(safe-area-inset-left))",
-                }}
-                className="fixed z-[90] inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/30 bg-white/5 px-4 py-3 text-xs tracking-widest text-white/70 backdrop-blur transition hover:border-white/60 hover:text-white"
-            >
-                {playing ? "🔊 Música" : "🔇 Música"}
-            </button>
-        </>
+    const audio = (
+        <audio
+            ref={audioRef}
+            src="/audio/little-dippers-forever.mp3"
+            loop
+            autoPlay
+            muted
+        />
     );
+
+    return { playing, toggle, audio };
 }
