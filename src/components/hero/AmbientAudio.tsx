@@ -85,7 +85,12 @@ export function AmbientAudio() {
             <button
                 onClick={toggle}
                 aria-label={playing ? "Desativar música" : "Ativar música"}
-                className="fixed bottom-6 left-6 z-[90] rounded-full border border-white/30 bg-white/5 px-4 py-3 text-xs tracking-widest text-white/70 backdrop-blur transition hover:border-white/60 hover:text-white"
+                // Touch target ≥44px e respeito à área segura (notch iOS).
+                style={{
+                    bottom: "max(1.5rem, env(safe-area-inset-bottom))",
+                    left: "max(1.5rem, env(safe-area-inset-left))",
+                }}
+                className="fixed z-[90] inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/30 bg-white/5 px-4 py-3 text-xs tracking-widest text-white/70 backdrop-blur transition hover:border-white/60 hover:text-white"
             >
                 {playing ? "🔊 Música" : "🔇 Música"}
             </button>

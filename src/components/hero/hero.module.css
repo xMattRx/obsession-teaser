@@ -48,10 +48,82 @@
   color: #f2f2f2;
   text-transform: uppercase;
 }
+.navactions {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
 .navlinks {
   display: flex;
   align-items: center;
   gap: 34px;
+}
+
+/* HAMBURGER — escondido no desktop/tablet, revelado no mobile via media query.
+   44x44 garante touch target acessível. */
+.hamburger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.hbar {
+  width: 24px;
+  height: 2px;
+  background: #f2f2f2;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+.hamburgerOpen .hbar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburgerOpen .hbar:nth-child(2) {
+  opacity: 0;
+}
+.hamburgerOpen .hbar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* PAINEL MOBILE — colapsa os links; escondido por padrão (inclusive no desktop). */
+.mobilemenu {
+  display: none;
+  position: absolute;
+  top: calc(100% - 6px);
+  right: 20px;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 8px;
+  border-radius: 14px;
+  background: rgba(10, 10, 12, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+.mobilelink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.mobilelink:hover,
+.mobilelink:active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
 }
 .navlink {
   font-size: 13px;
@@ -231,7 +303,10 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-display), sans-serif;
-  font-size: clamp(84px, 20.5vw, 320px);
+  /* Piso baixo (2.75rem) evita overflow horizontal de "OBSESSION" em telas
+     estreitas (≤375px); teto (320px) mantém a escala cinematográfica no
+     desktop/telas largas sem estourar. */
+  font-size: clamp(2.75rem, 17vw, 320px);
   line-height: 0.86;
   letter-spacing: -0.015em;
   text-transform: uppercase;
@@ -648,4 +723,191 @@
 .stage[data-phase="5"] .product {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+}
+
+/* ============================================================
+   RESPONSIVO
+   mobile  < 768px | tablet 768–1023px | desktop ≥ 1024px
+   ============================================================ */
+
+/* ---------- TABLET (≤1023px): links visíveis, mais compactos ---------- */
+@media (max-width: 1023px) {
+  .nav {
+    padding: 20px 26px;
+  }
+  .navactions,
+  .navlinks {
+    gap: 18px;
+  }
+  .navlink {
+    font-size: 12px;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  /* Card: coluna da imagem mais estreita, ainda lado a lado. */
+  .pcard {
+    grid-template-columns: 170px 1fr;
+    gap: 22px;
+    padding: 22px 24px;
+  }
+  .willow {
+    height: 180px;
+  }
+  .pmeta h3 {
+    font-size: 32px;
+  }
+  .product {
+    width: min(680px, 90vw);
+  }
+}
+
+/* ---------- MOBILE (≤767px) ---------- */
+@media (max-width: 767px) {
+  /* NAV: hamburguer entra, links inline saem, CTA menor; safe-area no topo. */
+  .nav {
+    padding: 14px 18px;
+    padding-top: calc(14px + env(safe-area-inset-top));
+    padding-left: calc(18px + env(safe-area-inset-left));
+    padding-right: calc(18px + env(safe-area-inset-right));
+  }
+  .navactions {
+    gap: 10px;
+  }
+  .navlinks {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .mobilemenuOpen {
+    display: flex;
+  }
+  .mobilemenu {
+    right: calc(18px + env(safe-area-inset-right));
+  }
+  .brand {
+    font-size: 17px;
+  }
+  .trailerbtn {
+    padding: 9px 14px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* WORDMARK: em letras pequenas a foto-no-texto vira ruído — trocamos por
+     branco sólido com glow (text-shadow, sem o filtro SVG pesado). O fundo
+     (split/casal) segue tocando atrás com o darken. */
+  .wordPhoto,
+  .wordCouple {
+    display: none;
+  }
+  .wordWhite {
+    opacity: 1;
+    filter: none;
+    text-shadow: 0 0 14px rgba(255, 255, 255, 0.55), 0 0 34px rgba(255, 255, 255, 0.3);
+  }
+
+  /* SPLIT: mantém 50/50 (preserva o vínculo Bear-esq / Nikki-dir do wordmark);
+     labels ganham piso legível via clamp e menos tracking pra não estourar.
+     Sobem o suficiente pra não colidir com os controles no rodapé. */
+  .cap {
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+  .cap .cn {
+    font-size: clamp(11px, 3.4vw, 15px);
+    letter-spacing: 0.22em;
+  }
+
+  /* TAGLINE: tracking largo estoura em 375px — reduz e permite quebra. A pill
+     "Assistir Trailer" daqui é redundante com a CTA sempre visível na nav e
+     custa altura preciosa no mobile, então some. */
+  .tag {
+    gap: 18px;
+    padding: 0 16px;
+  }
+  .tagline {
+    font-size: clamp(11px, 2.6vw, 13px);
+    letter-spacing: 0.18em;
+    text-align: center;
+  }
+  .tag .trailerbtn2 {
+    display: none;
+  }
+
+  /* GLOW: blur gigante custa caro no mobile — reduz raio e área. */
+  .glow {
+    filter: blur(14px);
+    width: 140vw;
+    height: 60vh;
+  }
+
+  /* Reposicionamento do wordmark/tagline na fase final ajustado pro mobile.
+     A tagline sobe acima do topo do card (que tem z maior) pra não ser coberta. */
+  .stage[data-phase="5"] .wordmark {
+    transform: translateY(-30vh) scale(0.62);
+  }
+  .stage[data-phase="5"] .tag {
+    transform: translateY(-22vh);
+  }
+
+  /* CARD DE PRODUTO: empilha verticalmente, compacto, e afastado do rodapé pra
+     limpar os controles (Repetir/Pular) e deixar a tagline visível acima. */
+  .product {
+    width: 92vw;
+    bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+  .pcard {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+  .willow {
+    height: 120px;
+  }
+  .pmeta .kick {
+    margin-bottom: 6px;
+  }
+  .pmeta h3 {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .pmeta p {
+    font-size: 12.5px;
+    line-height: 1.45;
+    margin: 0 auto 12px;
+    max-width: none;
+  }
+  .prow {
+    justify-content: center;
+  }
+  .buy,
+  .how {
+    min-height: 44px;
+  }
+
+  /* CONTROLES: touch targets ≥44px, afastados da área segura. */
+  .controls {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    right: calc(16px + env(safe-area-inset-right));
+  }
+  .ctl {
+    min-height: 44px;
+    padding: 10px 16px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* ---------- REDUCED MOTION: pula pro estado final, sem sequência ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .stage *,
+  .stage *::before,
+  .stage *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -32,6 +32,9 @@ const STEPS: readonly [phase: number, delayMs: number][] = [
 export function Hero() {
     const [phase, setPhase] = useState(1);
     const [trailerOpen, setTrailerOpen] = useState(false);
+    // Quando o usuário pede menos movimento, pulamos direto pro estado final
+    // (fase 5) sem rodar a sequência de beats nem os cross-fades animados.
+    const [reducedMotion, setReducedMotion] = useState(false);
     const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
     // Fonte de verdade ÚNICA da troca de imagem de fundo: 0 = split (Bear|Nikki),
@@ -39,12 +42,13 @@ export function Hero() {
     // texto (Wordmark), então os dois cruzam em perfeita sincronia.
     const coupleReveal = useMotionValue(0);
     useEffect(() => {
+        // reduced-motion: sem transição (duration 0) — vai direto pro casal.
         const controls = animate(coupleReveal, phase >= COUPLE_PHASE ? 1 : 0, {
-            duration: phase >= COUPLE_PHASE ? 1 : 0.6,
+            duration: reducedMotion ? 0 : phase >= COUPLE_PHASE ? 1 : 0.6,
             ease: [0.7, 0, 0.2, 1],
         });
         return () => controls.stop();
-    }, [phase, coupleReveal]);
+    }, [phase, coupleReveal, reducedMotion]);
 
     const clear = useCallback(() => {
         timers.current.forEach(clearTimeout);
@@ -63,8 +67,15 @@ export function Hero() {
         schedule();
     }, [clear, schedule]);
 
-    // On mount phase is already 1, so just arm the sequence timers.
+    // On mount phase is already 1, so just arm the sequence timers — a menos
+    // que o usuário prefira menos movimento, caso em que pulamos pro estado final.
     useEffect(() => {
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (mq.matches) {
+            setReducedMotion(true);
+            setPhase(5);
+            return;
+        }
         schedule();
         return clear;
     }, [schedule, clear]);

@@ -30,7 +30,11 @@ export function TrailerModal({ onClose }: { onClose: () => void }) {
             <button
                 onClick={onClose}
                 aria-label="Fechar trailer"
-                className="absolute right-5 top-5 z-[101] rounded-full border border-white/30 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:border-white/60 hover:text-white"
+                style={{
+                    top: "max(1.25rem, env(safe-area-inset-top))",
+                    right: "max(1.25rem, env(safe-area-inset-right))",
+                }}
+                className="absolute z-[101] inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-white/30 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:border-white/60 hover:text-white"
             >
                 Fechar ✕
             </button>
