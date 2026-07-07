@@ -28,7 +28,6 @@
   background: radial-gradient(ellipse 80% 70% at 50% 45%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
 }
 
-/* NAV */
 .nav {
   position: absolute;
   top: 0;
@@ -59,8 +58,6 @@
   gap: 34px;
 }
 
-/* HAMBURGER — escondido no desktop/tablet, revelado no mobile via media query.
-   44x44 garante touch target acessível. */
 .hamburger {
   display: none;
   width: 44px;
@@ -91,7 +88,6 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* PAINEL MOBILE — colapsa os links; escondido por padrão (inclusive no desktop). */
 .mobilemenu {
   display: none;
   position: absolute;
@@ -166,7 +162,6 @@
   background: #e01a2b;
 }
 
-/* SPLIT PORTRAITS */
 .split {
   position: absolute;
   inset: 0;
@@ -241,20 +236,12 @@
   transition: opacity 0.5s;
 }
 
-/* FUNDO DO CASAL — foto ÚNICA (src/assets/nikki-bear.jpg) que substitui o
-   split ocupando o fundo INTEIRO da section (cover, centralizada). A opacidade
-   é dirigida pelo Framer via o MotionValue coupleReveal (0 -> 1), o MESMO valor
-   usado no recorte do texto: fundo e texto compartilham a mesma fonte e o
-   mesmo estado da timeline. Fica acima do split (z21 > z20) para o cross-fade. */
 .coupleBg {
   position: absolute;
   inset: 0;
   z-index: 21;
 }
 
-/* DARKEN OVERLAY — escurece tudo FORA das letras durante o reveal.
-   Fica ABAIXO do wordmark (z 25 < 40), então a textura das fotos dentro
-   do texto continua visível o tempo todo. Nunca chega a 100% opaco. */
 .darken {
   position: absolute;
   inset: 0;
@@ -265,37 +252,26 @@
   transition: opacity 1s ease;
 }
 
-/* WORDMARK — "photo-in-text": as letras de OBSESSION são recortadas
-   diretamente das fotos do Bear (esquerda) e da Nikki (direita), usando
-   background-clip: text sobre as mesmas imagens do split-screen. */
 .wordmark {
   position: absolute;
   inset: 0;
   z-index: 40;
   pointer-events: none;
-  /* A entrada (opacity/jitter) é orquestrada pelo Framer Motion no filho
-     .word; aqui só cuidamos do reposicionamento das fases 4/5. */
   transition: transform 1s cubic-bezier(0.7, 0, 0.2, 1);
 }
 .word {
   position: relative;
   width: 100%;
   height: 100%;
-  /* Entrada (emergência das letras) na fase 2. As trocas de textura internas
-     (split -> casal -> branco) são cross-fades das camadas filhas; a entrada
-     é só desta camada-mãe para não interferir nesses cross-fades. */
   opacity: 0;
   transition: opacity 0.9s ease;
 }
-/* Holder invisível do <defs> do filtro SVG (sem ocupar layout). */
 .svgDefs {
   position: absolute;
   width: 0;
   height: 0;
   pointer-events: none;
 }
-/* Base comum das camadas de texto: mesma fonte, tamanho e posição para
-   que todas se sobreponham perfeitamente (recorte photo-in-text). */
 .wordLayer {
   position: absolute;
   inset: 0;
@@ -303,9 +279,6 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-display), sans-serif;
-  /* Piso baixo (2.75rem) evita overflow horizontal de "OBSESSION" em telas
-     estreitas (≤375px); teto (320px) mantém a escala cinematográfica no
-     desktop/telas largas sem estourar. */
   font-size: clamp(2.75rem, 17vw, 320px);
   line-height: 0.86;
   letter-spacing: -0.015em;
@@ -318,24 +291,10 @@
   color: transparent;
   -webkit-text-fill-color: transparent;
 }
-/* Grupo da foto do SPLIT (Bear à esquerda, Nikki à direita), nítido e em cor
-   normal. NÃO leva filtro SVG — background-clip: text + filter quebra o recorte.
-   A opacidade é dirigida pelo Framer (MotionValue compartilhado: 1 - coupleReveal),
-   a mesma fonte que controla o fundo split da section — cruzam juntos para o
-   casal. */
 .wordPhoto {
   position: absolute;
   inset: 0;
 }
-/* As fotos do Bear/Nikki são QUADRADAS (2560x2560). Num palco landscape,
-   background-size:cover as escala para largura = largura do palco, sem sobra
-   horizontal — então background-position-x fica sem efeito e cada metade do
-   texto acaba amostrando a metade correspondente da foto. O rosto da Nikki
-   está em ~42% na horizontal (o lado direito da foto é fundo escuro), então
-   a metade "SION" caía toda no escuro. Damos um zoom (background-size > 100%)
-   para criar sobra horizontal e panoramizamos cada lado até o ROSTO cair
-   dentro do respectivo recorte — Bear na metade esquerda, Nikki na direita —
-   com o MESMO zoom (mesma nitidez/escala) e exposição equivalente. */
 .wordLeft {
   background-size: 180%;
   background-position: 78% 37%;
@@ -346,17 +305,10 @@
   background-position: 6% 21%;
   clip-path: inset(0 0 0 50%);
 }
-/* Casal recortado no texto (imagem ÚNICA, não split): cover centralizado
-   preenche todo "OBSESSION" de ponta a ponta, com o MESMO enquadramento do
-   fundo .coupleBg. A opacidade é dirigida pelo Framer (mesmo MotionValue
-   coupleReveal do fundo): quando o fundo troca para o casal, o recorte troca
-   junto, sem lógica de imagem separada. */
 .wordCouple {
   background-size: cover;
   background-position: center 38%;
 }
-/* Estado final: texto branco sólido com halação (sem imagem). O filtro SVG
-   só é aplicado AQUI, numa camada de texto branco puro. */
 .wordWhite {
   color: #fff;
   -webkit-text-fill-color: #fff;
@@ -367,7 +319,6 @@
 }
 
 
-/* TAGLINE */
 .tag {
   position: absolute;
   left: 0;
@@ -418,7 +369,6 @@
   border-bottom: 5px solid transparent;
 }
 
-/* PRODUCT */
 .glow {
   position: absolute;
   left: 50%;
@@ -478,7 +428,6 @@
 .willow img {
   transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.6s ease;
 }
-/* Brilho vermelho "de desejo" que desperta ao passar o mouse. */
 .willow::after {
   content: "";
   position: absolute;
@@ -506,7 +455,6 @@
 .willow:hover::after {
   animation: willowHeartbeat 2.6s ease-in-out infinite;
 }
-/* Pulsação em ritmo de batimento cardíaco — a obsessão despertando (sutil). */
 @keyframes willowHeartbeat {
   0% {
     opacity: 0.22;
@@ -619,9 +567,6 @@
   color: #fff;
 }
 
-/* FOOTER — barra única no rodapé: Música à esquerda, Repetir/Pular à direita.
-   justify-between + align-items center dão baseline e espaçamento consistentes;
-   o padding lateral casa com o da nav (40px desktop / 26 tablet / 18 mobile). */
 .footer {
   position: absolute;
   left: 0;
@@ -637,12 +582,10 @@
   padding-bottom: calc(22px + env(safe-area-inset-bottom));
   pointer-events: none;
 }
-/* A barra em si não captura cliques (pra não bloquear o card); só os botões. */
 .footer > * {
   pointer-events: auto;
 }
 
-/* CONTROLS — par Repetir/Pular, agrupado à direita dentro do footer. */
 .controls {
   display: flex;
   align-items: center;
@@ -682,10 +625,6 @@
   transition: width 0.9s linear;
 }
 
-/* ===== PHASE STATE MACHINE ===== */
-/* As fotos do split-screen PERMANECEM na tela (não encolhem): elas são a
-   textura de onde as letras nascem. O divisor central some conforme o
-   texto assume o lugar. */
 .stage[data-phase="2"] .divider,
 .stage[data-phase="3"] .divider,
 .stage[data-phase="4"] .divider,
@@ -693,7 +632,6 @@
   opacity: 0;
 }
 
-/* Entrada das letras: emergem na fase 2 (camada-mãe .word). */
 .stage[data-phase="2"] .word,
 .stage[data-phase="3"] .word,
 .stage[data-phase="4"] .word,
@@ -701,11 +639,6 @@
   opacity: 1;
 }
 
-/* DARKEN — escurecimento cinematográfico do FUNDO (fica abaixo do wordmark).
-   NÃO chega a preto absoluto nas fases 2-4: o fundo (split e depois o casal)
-   PERMANECE visível ocupando a section inteira; o darken só dá separação para
-   o texto. Na fase 5 sobe bastante para dar contraste à halação branca e ao
-   card de produto. */
 .stage[data-phase="2"] .darken,
 .stage[data-phase="3"] .darken {
   opacity: 0.45;
@@ -717,16 +650,9 @@
   opacity: 0.9;
 }
 
-/* ---- OBSESSION: fase final ---- */
-/* Fase 5 (posição final, pequeno no topo): cross-fade da textura (casal) para o
-   texto branco com halação. O branco entra POR CIMA do recorte do casal, então
-   quando chega a 100% cobre a foto — o casal (dirigido por coupleReveal) pode
-   permanecer embaixo sem conflito. As trocas split->casal são feitas via Framer
-   (coupleReveal) nas camadas .wordPhoto/.wordCouple, não aqui. */
 .stage[data-phase="5"] .wordWhite {
   opacity: 1;
 }
-/* Reposicionamento do wordmark: encolhe (fase 4) e sobe pro topo (fase 5). */
 .stage[data-phase="4"] .wordmark {
   transform: translateY(-6vh) scale(0.92);
 }
@@ -746,24 +672,15 @@
   transform: translateX(-50%) scale(1.05);
 }
 .stage[data-phase="5"] .product {
-  /* Offset fixo (px) do rodapé: garante folga acima do footer em qualquer
-     ALTURA de viewport (o antigo 6vh encostava no footer em telas baixas). */
   bottom: calc(80px + env(safe-area-inset-bottom));
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
 
-/* ============================================================
-   RESPONSIVO
-   mobile  < 768px | tablet 768–1023px | desktop ≥ 1024px
-   ============================================================ */
-
-/* ---------- TABLET (≤1023px): links visíveis, mais compactos ---------- */
 @media (max-width: 1023px) {
   .nav {
     padding: 20px 26px;
   }
-  /* Footer acompanha o padding lateral da nav. */
   .footer {
     padding-left: calc(26px + env(safe-area-inset-left));
     padding-right: calc(26px + env(safe-area-inset-right));
@@ -778,7 +695,6 @@
   .brand {
     font-size: 18px;
   }
-  /* Card: coluna da imagem mais estreita, ainda lado a lado. */
   .pcard {
     grid-template-columns: 170px 1fr;
     gap: 22px;
@@ -795,9 +711,7 @@
   }
 }
 
-/* ---------- MOBILE (≤767px) ---------- */
 @media (max-width: 767px) {
-  /* NAV: hamburguer entra, links inline saem, CTA menor; safe-area no topo. */
   .nav {
     padding: 14px 18px;
     padding-top: calc(14px + env(safe-area-inset-top));
@@ -828,9 +742,6 @@
     letter-spacing: 0.05em;
   }
 
-  /* WORDMARK: em letras pequenas a foto-no-texto vira ruído — trocamos por
-     branco sólido com glow (text-shadow, sem o filtro SVG pesado). O fundo
-     (split/casal) segue tocando atrás com o darken. */
   .wordPhoto,
   .wordCouple {
     display: none;
@@ -841,9 +752,6 @@
     text-shadow: 0 0 14px rgba(255, 255, 255, 0.55), 0 0 34px rgba(255, 255, 255, 0.3);
   }
 
-  /* SPLIT: mantém 50/50 (preserva o vínculo Bear-esq / Nikki-dir do wordmark);
-     labels ganham piso legível via clamp e menos tracking pra não estourar.
-     Sobem o suficiente pra não colidir com os controles no rodapé. */
   .cap {
     bottom: calc(64px + env(safe-area-inset-bottom));
   }
@@ -852,9 +760,6 @@
     letter-spacing: 0.22em;
   }
 
-  /* TAGLINE: tracking largo estoura em 375px — reduz e permite quebra. A pill
-     "Assistir Trailer" daqui é redundante com a CTA sempre visível na nav e
-     custa altura preciosa no mobile, então some. */
   .tag {
     gap: 18px;
     padding: 0 16px;
@@ -868,15 +773,12 @@
     display: none;
   }
 
-  /* GLOW: blur gigante custa caro no mobile — reduz raio e área. */
   .glow {
     filter: blur(14px);
     width: 140vw;
     height: 60vh;
   }
 
-  /* Reposicionamento do wordmark/tagline na fase final ajustado pro mobile.
-     A tagline sobe acima do topo do card (que tem z maior) pra não ser coberta. */
   .stage[data-phase="5"] .wordmark {
     transform: translateY(-30vh) scale(0.62);
   }
@@ -884,9 +786,6 @@
     transform: translateY(-22vh);
   }
 
-  /* CARD DE PRODUTO: empilha verticalmente, compacto, e afastado do rodapé pra
-     limpar os controles (Repetir/Pular) e deixar a tagline visível acima.
-     bottom é escopado na fase 5 pra não ser sobrescrito pelo base (80px). */
   .stage[data-phase="5"] .product {
     bottom: calc(64px + env(safe-area-inset-bottom));
   }
@@ -901,10 +800,6 @@
   }
   .willow {
     height: 120px;
-    /* Coluna única: evita que o box da imagem estique demais (430–499px).
-       Precisa de largura explícita (o filho é `fill`/absoluto, sem tamanho
-       intrínseco) senão colapsa; justify-self centraliza no track 1fr.
-       No layout de 2 colunas (≥500px) a coluna fixa de 160px domina. */
     width: 100%;
     max-width: 320px;
     justify-self: center;
@@ -933,7 +828,6 @@
     min-height: 44px;
   }
 
-  /* FOOTER: padding lateral da nav mobile; touch targets ≥44px. */
   .footer {
     padding-left: calc(18px + env(safe-area-inset-left));
     padding-right: calc(18px + env(safe-area-inset-right));
@@ -948,10 +842,6 @@
   }
 }
 
-/* ---------- MOBILE GRANDE / PHABLET (500–767px) ----------
-   Nesta faixa a coluna única estica a imagem do produto num box enorme e vazio.
-   Voltamos o card pra 2 colunas (imagem em coluna fixa + texto), aproveitando a
-   largura extra. Nav segue no hamburguer; wordmark segue branco sólido. */
 @media (min-width: 500px) and (max-width: 767px) {
   .pcard {
     grid-template-columns: 160px 1fr;
@@ -982,13 +872,6 @@
   }
 }
 
-/* ---------- VIEWPORT BAIXO (Fase 5) — tablet+ com pouca altura ----------
-   Em telas baixas (tablet retrato curto, tablet paisagem, desktop pequeno tipo
-   1024×768) o card subia alto demais e cobria o pill "Assistir Trailer" e/ou o
-   rodapé. O problema é a ALTURA da viewport, não a largura — então usamos
-   max-height: compactamos o card (o lado do texto é quem manda na altura),
-   subimos tagline/wordmark e ancoramos o card num offset fixo do rodapé.
-   min-width: 768 preserva o layout mobile próprio (<768). */
 @media (min-width: 768px) and (max-height: 900px) {
   .pcard {
     gap: 20px;
@@ -1024,7 +907,6 @@
   }
 }
 
-/* ---------- REDUCED MOTION: pula pro estado final, sem sequência ---------- */
 @media (prefers-reduced-motion: reduce) {
   .stage *,
   .stage *::before,

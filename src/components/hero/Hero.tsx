@@ -14,13 +14,6 @@ import { TrailerModal } from "./TrailerModal";
 import { Wordmark } from "./Wordmark";
 import styles from "./hero.module.css";
 
-// Cinematic reveal timeline:
-//   1  split-screen (Bear | Nikki) no fundo; letras emergem recortadas dele.
-//   2  split estabelecido (fundo + recorte do texto).
-//   3  CROSS-FADE: o fundo split e o recorte trocam JUNTOS para a foto única
-//      do casal (~1s), dirigidos pelo mesmo MotionValue coupleReveal.
-//   4  casal mantido; texto começa a encolher, tagline entra.
-//   5  texto sobe e faz cross-fade para branco com halação; card de produto.
 const COUPLE_PHASE = 3;
 const STEPS: readonly [phase: number, delayMs: number][] = [
     [2, 1500],
@@ -33,17 +26,11 @@ export function Hero() {
     const [phase, setPhase] = useState(1);
     const [trailerOpen, setTrailerOpen] = useState(false);
     const { playing: musicOn, toggle: toggleMusic, audio } = useAmbientAudio();
-    // Quando o usuário pede menos movimento, pulamos direto pro estado final
-    // (fase 5) sem rodar a sequência de beats nem os cross-fades animados.
     const [reducedMotion, setReducedMotion] = useState(false);
     const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-    // Fonte de verdade ÚNICA da troca de imagem de fundo: 0 = split (Bear|Nikki),
-    // 1 = foto do casal. Consumida pelo fundo (HeroSplitImages) e pelo recorte do
-    // texto (Wordmark), então os dois cruzam em perfeita sincronia.
     const coupleReveal = useMotionValue(0);
     useEffect(() => {
-        // reduced-motion: sem transição (duration 0) — vai direto pro casal.
         const controls = animate(coupleReveal, phase >= COUPLE_PHASE ? 1 : 0, {
             duration: reducedMotion ? 0 : phase >= COUPLE_PHASE ? 1 : 0.6,
             ease: [0.7, 0, 0.2, 1],
@@ -68,8 +55,6 @@ export function Hero() {
         schedule();
     }, [clear, schedule]);
 
-    // On mount phase is already 1, so just arm the sequence timers — a menos
-    // que o usuário prefira menos movimento, caso em que pulamos pro estado final.
     useEffect(() => {
         const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
         if (mq.matches) {
@@ -158,9 +143,6 @@ export function Hero() {
                 style={{ width: `${((phase - 1) / 4) * 100}%` }}
             />
 
-            {/* Rodapé único: Música à esquerda, Repetir/Pular à direita — mesmo
-                grid (justify-between / align-items center), mesmo padding lateral
-                da nav e mesma baseline em todos os breakpoints. */}
             <div className={styles.footer}>
                 <button
                     className={styles.ctl}

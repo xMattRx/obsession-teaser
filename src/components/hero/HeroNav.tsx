@@ -16,8 +16,6 @@ export function HeroNav({ onWatchTrailer }: { onWatchTrailer: () => void }) {
             <div className={styles.brand}>Obsession</div>
 
             <div className={styles.navactions}>
-                {/* Links inline — visíveis em tablet/desktop, escondidos no mobile
-                    (viram o menu hamburguer abaixo). */}
                 <div className={styles.navlinks}>
                     {LINKS.map((l) => (
                         <a key={l.label} className={styles.navlink} href={l.href}>
@@ -26,13 +24,11 @@ export function HeroNav({ onWatchTrailer }: { onWatchTrailer: () => void }) {
                     ))}
                 </div>
 
-                {/* CTA primária — sempre visível em todas as larguras. */}
                 <button className={styles.trailerbtn} onClick={onWatchTrailer}>
                     <span className={styles.tridot} />
                     Assistir Trailer
                 </button>
 
-                {/* Hamburguer — só aparece no mobile (via CSS). */}
                 <button
                     type="button"
                     className={`${styles.hamburger} ${menuOpen ? styles.hamburgerOpen : ""}`}
@@ -47,7 +43,6 @@ export function HeroNav({ onWatchTrailer }: { onWatchTrailer: () => void }) {
                 </button>
             </div>
 
-            {/* Painel do menu mobile — colapsa os links quando fechado. */}
             <div
                 id="hero-mobile-menu"
                 className={`${styles.mobilemenu} ${menuOpen ? styles.mobilemenuOpen : ""}`}

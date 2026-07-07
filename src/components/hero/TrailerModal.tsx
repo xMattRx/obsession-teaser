@@ -1,11 +1,9 @@
 "use client";
 import { useEffect } from "react";
 
-// Trailer oficial completo de Obsession (Curry Barker) — parte após "v=" na URL do YouTube.
 const YOUTUBE_ID = "gMC8kkwbIQQ";
 
 export function TrailerModal({ onClose }: { onClose: () => void }) {
-    // Fecha com ESC e trava o scroll do fundo enquanto o modal está aberto.
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();

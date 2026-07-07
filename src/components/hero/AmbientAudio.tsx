@@ -1,14 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-// Volume baixo para a música tema tocar apenas "de leve" ao fundo.
 const AMBIENT_VOLUME = 0.25;
 const FADE_MS = 1500;
 
-// Hook da música ambiente: dono do <audio> e da lógica de fade/autoplay.
-// Retorna o elemento <audio> (renderizado pelo Hero), o estado `playing` e o
-// `toggle` — assim o BOTÃO fica no rodapé compartilhado do Hero, alinhado no
-// mesmo grid dos controles Repetir/Pular (em vez de um fixed independente).
 export function useAmbientAudio() {
     const audioRef = useRef<HTMLAudioElement>(null);
     const fadeRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -21,7 +16,6 @@ export function useAmbientAudio() {
         }
     };
 
-    // Sobe o volume de 0 até AMBIENT_VOLUME suavemente ao longo de FADE_MS.
     const fadeIn = (audio: HTMLAudioElement) => {
         stopFade();
         const stepMs = 50;
@@ -47,8 +41,6 @@ export function useAmbientAudio() {
             .catch(() => setPlaying(false));
     };
 
-    // Navegadores só permitem autoplay quando mudo; liberamos o som (com
-    // fade-in) no primeiro clique/toque em qualquer lugar da página.
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
